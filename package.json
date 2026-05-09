@@ -1,0 +1,23 @@
+{
+  "name": "@yandu/plugin-converter-pdf",
+  "version": "1.0.0",
+  "description": "Yandu PDF converter plugin using MinerU",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@yandu/types": "^0.0.5"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.0",
+    "@types/node": "^22.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
