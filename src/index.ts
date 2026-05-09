@@ -626,8 +626,11 @@ class PDFConverter implements ContentConverter {
       lines.push(`    path: ${JSON.stringify(f.path)}`);
       lines.push(`    sourcePosition:`);
       lines.push(`      format: ${f.sourcePosition.format}`);
-      lines.push(`      page: ${f.sourcePosition.page}`);
-      lines.push(`      bbox: [${f.sourcePosition.bbox.join(', ')}]`);
+      if (f.sourcePosition.format === 'application/pdf') {
+        const pos = f.sourcePosition as { page: number; bbox: [number, number, number, number] };
+        lines.push(`      page: ${pos.page}`);
+        lines.push(`      bbox: [${pos.bbox.join(', ')}]`);
+      }
     }
     lines.push('equations: []');
     lines.push('citations: []');
