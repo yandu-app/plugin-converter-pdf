@@ -1,4 +1,4 @@
-# @yandu/plugin-converter-pdf
+# yandu-plugin-converter-pdf
 
 Yandu PDF converter plugin using MinerU.
 
@@ -10,6 +10,6 @@ Yandu PDF converter plugin using MinerU.
 ## Registration
 
 ```typescript
-import plugin from '@yandu/plugin-converter-pdf';
+import plugin from 'yandu-plugin-converter-pdf';
 plugin.register(system);
 ```

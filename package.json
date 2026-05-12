@@ -1,5 +1,5 @@
 {
-  "name": "@yandu/plugin-converter-pdf",
+  "name": "yandu-plugin-converter-pdf",
   "version": "1.0.0",
   "description": "Yandu PDF converter plugin using MinerU",
   "type": "module",
