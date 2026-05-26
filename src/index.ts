@@ -444,7 +444,7 @@ class PDFConverter implements ContentConverter {
     const markdownPath = path.join(outputDir, 'output.md');
     await writeFile(markdownPath, finalMarkdown);
 
-    const mappingPath = path.join(outputDir, 'paper.mapping.yaml');
+    const mappingPath = path.join(outputDir, 'item.mapping.yaml');
     await writeFile(mappingPath, this.stringifyYaml(mapping));
 
     if (typeof source !== 'string' && pdfPath.includes('temp_input')) {
