@@ -5,6 +5,7 @@ import type {
   ConversionResult,
   ConverterStageDescriptor,
   MappingData,
+  PluginLogger,
 } from '@yandu/types';
 import { spawn, execSync } from 'child_process';
 import { writeFile, mkdir, readFile } from 'fs/promises';
@@ -156,6 +157,11 @@ class MinerUService {
   private stopping = false;
   private startPromise: Promise<void> | null = null;
   private onTqdmProgress: ((tqdm: ReturnType<typeof parseTqdmLine>) => void) | null = null;
+  private logger: PluginLogger | null = null;
+
+  setLogger(logger: PluginLogger): void {
+    this.logger = logger;
+  }
 
   setTqdmProgressCallback(cb: typeof this.onTqdmProgress): void {
     this.onTqdmProgress = cb;
@@ -258,7 +264,7 @@ class MinerUService {
         const response = await fetch(`${this.baseUrl}/health`);
         if (response.ok) {
           this.managed = child;
-          console.warn(`[MinerU] HTTP API ready at ${this.baseUrl}`);
+          this.logger?.info(`HTTP API ready at ${this.baseUrl}`);
           return;
         }
       } catch {
@@ -304,6 +310,11 @@ const mineruService = new MinerUService();
 class PDFConverter implements ContentConverter {
   id = 'converter.pdf';
   inputFormats = ['application/pdf'];
+  private logger: PluginLogger | null = null;
+
+  setLogger(logger: PluginLogger): void {
+    this.logger = logger;
+  }
 
   settingsSchema = {
     type: 'object',
@@ -490,7 +501,7 @@ class PDFConverter implements ContentConverter {
     }
 
     const baseUrl = mineruService.getBaseUrl();
-    console.warn(`[PDFConverter] Calling MinerU API at ${baseUrl}/file_parse with backend=${options.backend}`);
+    this.logger?.info(`Calling MinerU API at ${baseUrl}/file_parse with backend=${options.backend}`);
     const response = await fetch(`${baseUrl}/file_parse`, {
       method: 'POST',
       body: form,
@@ -639,9 +650,11 @@ class PDFConverter implements ContentConverter {
 export default {
   name: '@yandu/plugin-converter-pdf',
   version: '1.0.0',
-  register(system) {
+  register(runtime) {
     const converter = new PDFConverter();
-    system.capabilities.register(
+    converter.setLogger(runtime.logger);
+    mineruService.setLogger(runtime.logger);
+    runtime.capabilities.register(
       { type: 'converter', id: converter.id, name: 'MinerU PDF Converter' },
       converter,
     );
