@@ -6,7 +6,7 @@ import type {
   ConverterStageDescriptor,
   MappingData,
 } from '@yandu/types';
-import { spawn } from 'child_process';
+import { spawn, execSync } from 'child_process';
 import { writeFile, mkdir, readFile } from 'fs/promises';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import path from 'path';
@@ -102,7 +102,6 @@ function findFreePort(startPort = 18000): Promise<number> {
 
 function detectGpu(): 'cuda' | 'mps' | 'none' {
   try {
-    const { execSync } = require('child_process');
     if (process.platform !== 'darwin') {
       execSync('nvidia-smi', { stdio: 'ignore' });
       return 'cuda';
@@ -112,7 +111,6 @@ function detectGpu(): 'cuda' | 'mps' | 'none' {
   }
   if (process.platform === 'darwin') {
     try {
-      const { execSync } = require('child_process');
       const out = execSync('system_profiler SPDisplaysDataType', { encoding: 'utf-8' });
       if (out.includes('Apple M')) return 'mps';
     } catch {
@@ -214,7 +212,7 @@ class MinerUService {
     child.stdout?.on('data', (chunk: Buffer) => {
       const lines = chunk.toString().split('\n');
       for (const line of lines) {
-        if (line.trim()) console.log(`[MinerU] ${line.trim()}`);
+        if (line.trim()) console.warn(`[MinerU] ${line.trim()}`);
       }
     });
 
@@ -260,7 +258,7 @@ class MinerUService {
         const response = await fetch(`${this.baseUrl}/health`);
         if (response.ok) {
           this.managed = child;
-          console.log(`[MinerU] HTTP API ready at ${this.baseUrl}`);
+          console.warn(`[MinerU] HTTP API ready at ${this.baseUrl}`);
           return;
         }
       } catch {
@@ -492,7 +490,7 @@ class PDFConverter implements ContentConverter {
     }
 
     const baseUrl = mineruService.getBaseUrl();
-    console.log(`[PDFConverter] Calling MinerU API at ${baseUrl}/file_parse with backend=${options.backend}`);
+    console.warn(`[PDFConverter] Calling MinerU API at ${baseUrl}/file_parse with backend=${options.backend}`);
     const response = await fetch(`${baseUrl}/file_parse`, {
       method: 'POST',
       body: form,
