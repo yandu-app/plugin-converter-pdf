@@ -17,7 +17,7 @@
     "prepack": "npm run test"
   },
   "dependencies": {
-    "@yandu/types": "0.0.7"
+    "@yandu/types": ">=0.0.7 <0.2"
   },
   "devDependencies": {
     "typescript": "^5.6.0",
